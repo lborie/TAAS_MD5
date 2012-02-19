@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
-  <cron>
-    <url>/md5</url>
-    <description>launch a search</description>
-    <schedule>every 5 minutes</schedule>
-  </cron>
+<!--   <cron> -->
+<!--     <url>/md5</url> -->
+<!--     <description>launch a search</description> -->
+<!--     <schedule>every 5 minutes</schedule> -->
+<!--   </cron> -->
 </cronentries>

@@ -43,7 +43,6 @@ public class MD5Cron extends RemoteServiceServlet {
 
 	private void tagProcess(TimeEntity entity, Twitter twitter, TimeEntityDao dao) {
 		Query query = new Query(entity.getTag());
-		query.setRpp(10);
 		if (entity.getLastId() != null) {
 			query.setSinceId(entity.getLastId());
 		} else {
@@ -64,7 +63,9 @@ public class MD5Cron extends RemoteServiceServlet {
 				String futurStatus = MENTION_TAG + fromUser + " " + this.encode(content.replaceAll(entity.getTag(), "").trim());
 				if (!timeLineContent.contains(futurStatus) && tweet.getId() != entity.getLastId() && !content.contains("TaasMD5")) {
 					twitter.updateStatus(futurStatus);
-					entity.setLastId(tweet.getId());
+					if (entity.getLastId() < tweet.getId()) {
+						entity.setLastId(tweet.getId());
+					}
 				}
 			}
 			dao.saveTimeEntity(entity);
