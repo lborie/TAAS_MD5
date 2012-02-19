@@ -15,27 +15,46 @@ import com.googlecode.objectify.annotation.Unindexed;
 @Entity
 @Unindexed
 public class TimeEntity {
+
+	public enum TimeEntityType {
+		TAAS_MD5("#taasmd5"), MD5(" MD5 ");
+
+		private String type;
+
+		private TimeEntityType(String tag) {
+			this.type = tag;
+		}
+
+		public String getType() {
+			return this.type;
+		}
+	}
+
 	@Id
 	private Long id;
 
 	private Long lastId;
 
 	@Indexed
-	private String lastTimeEntity = "lastTimeEntity";
+	private String tag;
+
+	public TimeEntity(TimeEntityType type) {
+		this.tag = type.getType();
+	}
 
 	/**
 	 * @return the lastTimeEntity
 	 */
-	public String getLastTimeEntity() {
-		return lastTimeEntity;
+	public String getTag() {
+		return tag;
 	}
 
 	/**
 	 * @param lastTimeEntity
 	 *            the lastTimeEntity to set
 	 */
-	public void setLastTimeEntity(String lastTimeEntity) {
-		this.lastTimeEntity = lastTimeEntity;
+	public void setTag(String tag) {
+		this.tag = tag;
 	}
 
 	/**

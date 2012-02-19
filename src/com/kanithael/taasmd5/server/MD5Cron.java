@@ -28,40 +28,46 @@ import com.kanithael.taasmd5.shared.TimeEntity;
  */
 @SuppressWarnings("serial")
 public class MD5Cron extends RemoteServiceServlet {
-
-	private static final String MD5_TAG = "#taasmd5";
-
 	private static final String MENTION_TAG = "@";
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		TimeEntityDao dao = TimeEntityDao.getInstance();
-		TimeEntity timeEntity = dao.fetchLastTimeEntity();
 		Twitter twitter = new TwitterFactory().getInstance();
-		List<String> timeLineContent = new ArrayList<String>();
-		Query query = new Query(MD5_TAG);
-		if (timeEntity.getLastId() != null){
-			query.setSinceId(timeEntity.getLastId());
-		} else {
-			timeEntity.setLastId(new Long(0));
+		List<TimeEntity> timeEntities = dao.fetchLastTimeEntities();
+
+		for (TimeEntity entity : timeEntities) {
+			this.tagProcess(entity, twitter, dao);
 		}
+	}
+
+	private void tagProcess(TimeEntity entity, Twitter twitter, TimeEntityDao dao) {
+		Query query = new Query(entity.getTag());
 		query.setRpp(10);
+		if (entity.getLastId() != null) {
+			query.setSinceId(entity.getLastId());
+		} else {
+			entity.setLastId(new Long(0));
+		}
+
 		try {
+			List<String> timeLineContent = new ArrayList<String>();
 			ResponseList<Status> responseList = twitter.getHomeTimeline();
 			for (Status response : responseList) {
 				timeLineContent.add(response.getText());
 			}
+
 			QueryResult qr = twitter.search(query);
 			for (Tweet tweet : qr.getTweets()) {
 				String fromUser = tweet.getFromUser();
 				String content = tweet.getText();
-				String futurStatus = MENTION_TAG + fromUser + " " + this.encode(content.replaceAll(MD5_TAG, "").trim());
-				if (!timeLineContent.contains(futurStatus) && tweet.getId() != timeEntity.getLastId()) {
+				String futurStatus = MENTION_TAG + fromUser + " " + this.encode(content.replaceAll(entity.getTag(), "").trim());
+				if (!timeLineContent.contains(futurStatus) && tweet.getId() != entity.getLastId() && !content.contains("TaasMD5")) {
 					twitter.updateStatus(futurStatus);
-					timeEntity.setLastId(twitter.getId());
+					entity.setLastId(twitter.getId());
 				}
 			}
-			dao.saveTimeEntity(timeEntity);
+			dao.saveTimeEntity(entity);
 		} catch (TwitterException e) {
 			e.printStackTrace();
 		}

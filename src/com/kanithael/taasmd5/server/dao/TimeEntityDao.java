@@ -1,6 +1,5 @@
 package com.kanithael.taasmd5.server.dao;
 
-import java.util.Date;
 import java.util.List;
 
 import com.googlecode.objectify.ObjectifyService;
@@ -26,15 +25,16 @@ public class TimeEntityDao extends DAOBase {
 		ofy().put(timeEntity);
 	}
 
-	public TimeEntity fetchLastTimeEntity() {
-		TimeEntity te = null;
+	public List<TimeEntity> fetchLastTimeEntities() {
 		List<TimeEntity> timeEntities = ofy().query(TimeEntity.class).list();
 		if (timeEntities.size() == 0) {
-			te = new TimeEntity();
-			ofy().put(te);
-		} else {
-			te = timeEntities.get(0);
+			TimeEntity teMD5 = new TimeEntity(TimeEntity.TimeEntityType.MD5);
+			ofy().put(teMD5);
+			timeEntities.add(teMD5);
+			TimeEntity teTAAS = new TimeEntity(TimeEntity.TimeEntityType.TAAS_MD5);
+			ofy().put(teTAAS);
+			timeEntities.add(teTAAS);
 		}
-		return te;
+		return timeEntities;
 	}
 }

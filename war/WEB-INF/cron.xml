@@ -3,6 +3,6 @@
   <cron>
     <url>/md5</url>
     <description>launch a search</description>
-    <schedule>every 3 minutes</schedule>
+    <schedule>every 5 minutes</schedule>
   </cron>
 </cronentries>
