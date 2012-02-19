@@ -61,11 +61,12 @@ public class MD5Cron extends RemoteServiceServlet {
 				String fromUser = tweet.getFromUser();
 				String content = tweet.getText();
 				String futurStatus = MENTION_TAG + fromUser + " " + this.encode(content.replaceAll(entity.getTag(), "").trim());
-				if (!timeLineContent.contains(futurStatus) && tweet.getId() != entity.getLastId() && !content.contains("TaasMD5")) {
+				if (!timeLineContent.contains(futurStatus) && tweet.getId() != entity.getLastId() && !content.contains("TaasMD5") && !"TaasMD5".equals(fromUser)) {
 					twitter.updateStatus(futurStatus);
 					if (entity.getLastId() < tweet.getId()) {
 						entity.setLastId(tweet.getId());
 					}
+					System.out.println(futurStatus);
 				}
 			}
 			dao.saveTimeEntity(entity);

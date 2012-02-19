@@ -17,7 +17,7 @@ import com.googlecode.objectify.annotation.Unindexed;
 public class TimeEntity {
 
 	public enum TimeEntityType {
-		TAAS_MD5("#taasmd5"), MD5(" MD5 ");
+		TAAS_MD5("#taasmd5"), MD5("#MD5");
 
 		private String type;
 
