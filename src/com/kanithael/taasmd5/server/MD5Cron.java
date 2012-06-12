@@ -29,6 +29,7 @@ import com.kanithael.taasmd5.shared.TimeEntity;
 @SuppressWarnings("serial")
 public class MD5Cron extends RemoteServiceServlet {
 	private static final String MENTION_TAG = "@";
+	private static final String EXPLAIN_TAG = " is the MD5 encryption of the text contained in your tweet.";
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -60,7 +61,7 @@ public class MD5Cron extends RemoteServiceServlet {
 			for (Tweet tweet : qr.getTweets()) {
 				String fromUser = tweet.getFromUser();
 				String content = tweet.getText();
-				String futurStatus = MENTION_TAG + fromUser + " " + this.encode(content.replaceAll(entity.getTag(), "").trim());
+				String futurStatus = MENTION_TAG + fromUser + " " + this.encode(content.replaceAll(entity.getTag(), "").trim()) + EXPLAIN_TAG;
 				if (!timeLineContent.contains(futurStatus) && tweet.getId() != entity.getLastId() && !content.contains("TaasMD5") && !"TaasMD5".equals(fromUser)) {
 					twitter.updateStatus(futurStatus);
 					if (entity.getLastId() < tweet.getId()) {
